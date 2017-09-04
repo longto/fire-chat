@@ -1,29 +1,63 @@
-<!DOCTYPE html><html><head>
-  <meta charset="UTF-8">
-  <title>fire-chat</title>
-  <link rel="icon" sizes="192x192" href="http://www.gstatic.com/mobilesdk/160503_mobilesdk/logo/2x/firebase_96dp.png">
-  <link rel="stylesheet prefetch" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
-  <link rel="stylesheet prefetch" href="style.css">
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>fire-chat</title>
+    <link rel="stylesheet prefetch"
+          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet prefetch" href="style.css">
 </head>
-<body >
-  <div class="fire-chat">
-  <div class="left">
-    <div class="user-status">
+<body>
+<div class="fire-chat">
+    <div class="left">
+        <div class="login-panel">
+            <form id="login-form">
+                <div class="form-group input-group">
+                    <input type="email" class="form-control" id="email" placeholder="Email address" value="long.to@niteco.se">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                </div>
+                <div class="form-group input-group">
+                    <input type="password" class="form-control" id="pwd" placeholder="Password" value="123456">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                </div>
+                <div class="text-center">
+                    <a id="login" class="btn btn-default">Login</a>
+                </div>
+            </form>
+        </div>
+        <div class="user-status">
+        </div>
     </div>
-  </div>
-  <div class="right">
-    <div class="chat-messages">
-    		<div class="message">
-    				you
-    		</div>
-    		<div class="me message">
-    				me
-    		</div>
+    <div class="right">
+        <div class="chat-messages">
+            <div class="message hidden">
+                <div>
+                    <strong class="text-bold">you</strong>
+                    <small class="text-small">12:00:00</small>
+                </div>
+                <div class="content">
+                    you
+                </div>
+            </div>
+            <div class="me message hidden">
+                <div>
+                    <strong class="text-bold">me</strong>
+                    <small class="text-small">12:00:00</small>
+                </div>
+                <div class="content">
+                    me
+                </div>
+            </div>
+        </div>
+        <div class="chat-input">
+            <textarea id="chat-area" autofocus></textarea>
+        </div>
     </div>
-    <div class="chat-input">
-    </div>
-  </div>
 </div>
 <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js"></script>
+
 <script src="script.js"></script>
-</body></html>
+</body>
+</html>
