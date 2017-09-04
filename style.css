@@ -1,0 +1,55 @@
+.fire-chat {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+.fire-chat>.left, .fire-chat>.right {
+  height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.fire-chat>.left {
+  width: 300px;
+  border-right: 1px solid #ccc;
+}
+.fire-chat>.right {
+  width: calc(100% - 300px);
+}
+.fire-chat>.right .chat-messages {
+  height: calc(100% - 80px);
+  border: 5px solid #ccc;
+  padding: 10px;
+}
+.fire-chat>.right .chat-input {
+  height: 80px;
+}
+.message{
+  border : 1px solid #ccc;
+  padding: 10px;
+  height : auto ;
+  max-width: 70%;
+  margin-top: 20px;
+  background-color: #eee;
+  border-radius: 4px;
+  position: relative;
+}
+.message:before{
+  content: '';
+  display: inline-block;
+  border: 7px solid;
+  border-color: transparent #ccc transparent transparent ;
+  position: absolute;
+  position: absolute;
+  left: -15px;
+  top: calc(50% - 7px);
+}
+.message.me{
+  float: right;
+  text-align: right;
+}
+.message.me:before{
+  left: auto;
+  right : -15px;
+  border-color: transparent transparent transparent #ccc;
+}
