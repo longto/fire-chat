@@ -3,51 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <title>fire-chat</title>
+    <link rel="shortcut icon" type="image/x-icon" href="img/fire-school-logo-flame.png">
     <link rel="stylesheet prefetch"
           href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet prefetch" href="style.css">
 </head>
 <body>
-<div class="fire-chat">
+<form id="login-form">
+    <h1 class="logo text-uppercase">
+        <img src="img/fire-school-logo-flame.png" class="logo">
+        Fire Chat
+    </h1>
+    <div class="form-group input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+        <input type="email" class="form-control" id="email" placeholder="Email address" value="long.to@niteco.se">
+    </div>
+    <div class="form-group input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+        <input type="password" class="form-control" id="pwd" placeholder="Password" value="123456">
+    </div>
+    <div class="form-group text-center">
+        <a id="login" class="btn btn-default">Login</a> /
+        <a id="create" class="btn btn-default">Create</a>
+    </div>
+    <p class="error text-center"> &#8203 </p>
+</form>
+<div class="fire-chat hide">
     <div class="left">
-        <div class="login-panel">
-            <form id="login-form">
-                <div class="form-group input-group">
-                    <input type="email" class="form-control" id="email" placeholder="Email address" value="long.to@niteco.se">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                </div>
-                <div class="form-group input-group">
-                    <input type="password" class="form-control" id="pwd" placeholder="Password" value="123456">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-                </div>
-                <div class="text-center">
-                    <a id="login" class="btn btn-default">Login</a>
-                </div>
-            </form>
+        <div id="profile" >
+            <h3 class="logo text-uppercase">
+                <img src="img/fire-school-logo-flame.png" class="logo">
+                Fire Chat
+            </h3>
+            <img class="avatar" src="img/user.png">
+            <span class="welcome"></span>
+            <a href="#" id="sign-out">sign out</a>
         </div>
         <div class="user-status">
         </div>
     </div>
     <div class="right">
         <div class="chat-messages">
-            <div class="message hidden">
-                <div>
-                    <strong class="text-bold">you</strong>
-                    <small class="text-small">12:00:00</small>
-                </div>
-                <div class="content">
-                    you
-                </div>
-            </div>
-            <div class="me message hidden">
-                <div>
-                    <strong class="text-bold">me</strong>
-                    <small class="text-small">12:00:00</small>
-                </div>
-                <div class="content">
-                    me
-                </div>
-            </div>
         </div>
         <div class="chat-input">
             <textarea id="chat-area" autofocus></textarea>

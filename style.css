@@ -1,37 +1,56 @@
 *{
     box-sizing: border-box;
 }
+.pt-15{
+    padding-top: 15px;
+}
+.full-width{
+    width: 100%;
+}
+body{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+#login-form{
+    width: 600px;
+}
+.logo img{
+    width: 35px;
+    height: 35px;
+    object-fit: cover;
+    vertical-align: top;
+}
+h3.logo img{
+    width: 20px;
+    height: 20px;
+}
 .fire-chat {
     width: 100vw;
     height: 100vh;
     display: flex;
 }
-
 .fire-chat > .left, .fire-chat > .right {
     height: 100%;
     -webkit-overflow-scrolling: touch;
 }
-
 .fire-chat > .left {
     overflow-x: hidden;
     overflow-y: auto;
     width: 300px;
-}
-#login-form{
-    padding: 10px;
+    padding: 0 10px 20px;
 }
 .fire-chat > .right {
     overflow: hidden;
     width: calc(100% - 300px);
 }
-
 .fire-chat > .right .chat-messages {
     height: calc(100% - 80px);
     padding: 10px;
     overflow-x : hidden;
     overflow-y: auto;
 }
-
 .fire-chat > .right .chat-input {
     height: 80px;
     text-align: center;
@@ -39,39 +58,54 @@
 #chat-area{
     width: calc(100% - 40px);
     margin: auto;
-    height:50px;
+    height : 50px;
     border : 3px solid #aaa;
     padding: 10px 15px;
 }
-
 .message{
-    margin-top: 15px;
+    transition: background-color 0.3s ease;
+    cursor: text;
+    display: flex;
 }
-.message>.content {
-    border: 1px solid #ccc;
-    padding: 10px;
-    height: auto;
-    max-width: 70%;
-    background-color: #eee;
+.message:hover{
+    background-color: #efefef;
+}
+.message .icon{
+    width: 60px;
+}
+.message .icon .avatar{
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    cursor: pointer;
+}
+.message .time,.message .action{
+    color: #aaa;
+}
+.message .action{
+    float : right;
+    padding-right: 15px;
+    padding-top: 3px;
+    cursor: pointer;
+}
+.message .icon .time,.message .action{
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+.message:hover .icon .time,.message:hover .action{
+    opacity: 1;
+    pointer-events: all;
+}
+.message .content {
+    padding-bottom:5px;
     border-radius: 4px;
-    position: relative;
     display: inline-block;
 }
-.message>.content:before {
-    content: '';
+#profile .avatar {
+    width: 60px;
+    height: 60px;
     display: inline-block;
-    border: 7px solid;
-    border-color: transparent #ccc transparent transparent;
-    position: absolute;
-    position: absolute;
-    left: -15px;
-    top: calc(50% - 7px);
-}
-.message.me {
-    text-align: right;
-}
-.message.me>.content:before {
-    left: auto;
-    right: -15px;
-    border-color: transparent transparent transparent #ccc;
+    object-fit: cover;
+    cursor: pointer;
 }
