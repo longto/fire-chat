@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <title>fire-chat</title>
     <link rel="shortcut icon" type="image/x-icon" href="img/fire-school-logo-flame.png">
-    <link rel="stylesheet prefetch"
-          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet prefetch" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet prefetch" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet prefetch" href="style.css">
 </head>
 <body>
 <form id="login-form">
     <h1 class="logo text-uppercase">
-        <img src="img/fire-school-logo-flame.png" class="logo">
+        <span class="fa fa-fire"></span>
         Fire Chat
     </h1>
     <div class="form-group input-group">
@@ -32,12 +32,15 @@
     <div class="left">
         <div id="profile" >
             <h3 class="logo text-uppercase">
-                <img src="img/fire-school-logo-flame.png" class="logo">
+                <span class="fa fa-fire"></span>
                 Fire Chat
             </h3>
-            <img class="avatar" src="img/user.png">
-            <span class="welcome"></span>
-            <a href="#" id="sign-out">sign out</a>
+            <div>
+            	<span class="welcome"></span>
+            	<a href="#" id="sign-out">sign out</a>
+            </div>
+            <div class="online">
+            </div>
         </div>
         <div class="user-status">
         </div>
@@ -46,7 +49,11 @@
         <div class="chat-messages">
         </div>
         <div class="chat-input">
-            <textarea id="chat-area" autofocus></textarea>
+            <div class="form-group input-group">
+                <input type="file" id="fileElem" multiple accept="image/*" class="hide">
+                <span class="input-group-addon"><label for="fileElem" class="fa fa-plus"></label></span>
+                <input id="chat-area" autofocus class="form-control" placeholder="Chat here"/>
+            </div>
         </div>
     </div>
 </div>

@@ -12,8 +12,10 @@ firebase.initializeApp(config);
 var storage = firebase.storage();
 var database = firebase.database();
 var chat = database.ref('chat');
-var currentUser;
+var presence = database.ref("presence");
+var currentUser,currentUserUid;
 var chatMessagesDom = document.querySelector(".chat-messages");
+var online = document.querySelector(".online");
 var lastMessage = null;
 /* Utils - templates */
 var getTime = function (timestamp) { // Convert UNIX epoch time into human readble time.
@@ -27,13 +29,13 @@ var getMessageTemplate = function(message){
             <strong>${message.name}</strong> 
             <small class="time">${getTime(message.time) || ""}</small>
         </div>`,
-        icon = keepHeader ? `<small class="time">${getTime(message.time) || ""}</small>` : `<img src="img/user.png" class="avatar">`,
+        icon = keepHeader ? `<small class="time">${getTime(message.time) || ""}</small>` : `<img src="https://www.b1g1.com/assets/admin/images/no_image_user.png" class="avatar">`,
         action = `<div class="action">
             <span class="glyphicon glyphicon-pencil"></span>
             <span class="glyphicon glyphicon-trash"></span>
         </div>` ;
 
-    return `<div class="message ${me} ${!keepHeader?"pt-15":""}" data-id="${message.id}" data-user="${message.name}">
+    return `<div class="message ${me}" data-id="${message.id}" data-user="${message.name}">
         <div class="icon">
             ${icon}
         </div>
@@ -69,19 +71,19 @@ firebase.auth().onAuthStateChanged(function(user) {
     });
      */
     if (user) {
+    	//firebase.auth().currentUser
         currentUser = !user || user.isAnonymous ? "Anonymous" : user.displayName || user.email;
+        currentUserUid = user.uid;
         console.log(currentUser,"is logged in");
         document.querySelector("#profile .welcome").innerHTML = `${currentUser}`;
         document.querySelector("#login-form").classList.add("hide");
         document.querySelector(".fire-chat").classList.remove("hide");
         initApp();
-
     } else {
         document.querySelector("#login-form").classList.remove("hide");
         document.querySelector(".fire-chat").classList.add("hide");
     }
 });
-
 /*firebase.auth().signInAnonymously().catch(function(error) {
     console.log(error.code,error.message);
 }).then(function(user){
@@ -108,6 +110,7 @@ document.querySelector("#login").addEventListener("click",function (e) {
 });
 document.querySelector("#sign-out").addEventListener("click",function (e) {
     e.preventDefault();
+    presence.child(currentUserUid).remove();
     firebase.auth().signOut().then(function() {
         console.log(currentUser,"is logged out");
     }, function(error) {
@@ -151,7 +154,18 @@ document.querySelector("#chat-area").addEventListener("keyup",function (e) {
         e.target.value="";
     }
 });
-
+document.querySelector("#fileElem").addEventListener("change",function (e) {
+    let file = e.target.files[0];
+    console.log(file);
+    storage.ref("images").child(file.name).put(file).then(function(snapshot) {
+        console.log('Uploaded a blob or file!',snapshot);
+        let url = snapshot.metadata.downloadURLs[0];
+        if (url){
+            let img = `<img src="${url}"/>`
+            chat.push({name: currentUser || "Anonymous", text: img, time: firebase.database.ServerValue.TIMESTAMP });
+        }
+    });
+});
 /* CRUD */
 var initApp = function(messages){
     chat.once("value", function(snapshot) {
@@ -178,11 +192,44 @@ var initApp = function(messages){
     chat.on("child_removed", function(snapshot, prevChildKey) {
         let id = snapshot.key;
         console.log("child_removed",id);
-        document.querySelector(`.message[data-id=${id}]`).remove();
+        let targetDom = document.querySelector(`.message[data-id=${id}]`),
+            nextDom = targetDom.nextSibling;
+        if(targetDom.dataset.user==nextDom.dataset.user && targetDom.querySelector(".icon img")){
+            //swap content
+            console.log("need to move",nextDom);
+            targetDom.querySelector(".time").innerHTML = nextDom.querySelector(".time").innerHTML;
+            targetDom.querySelector(".content").innerHTML = nextDom.querySelector(".content").innerHTML;
+            nextDom.innerHTML=targetDom.innerHTML;
+        }
+        targetDom.remove();
     });
     chat.on("child_changed", function(snapshot, prevChildKey) {
         let id = snapshot.key;
         console.log("child_changed",id,snapshot.val());
         document.querySelector(`.message[data-id=${id}] .content`).innerHTML = snapshot.val().text;
     });
+
+    /* check online user */
+	var userRef = presence.child(firebase.auth().currentUser.uid);
+	// Add ourselves to presence list when online.
+	database.ref(".info/connected").on("value", function(snap) {
+	  if (snap.val()) {
+	    // Remove ourselves when we disconnect.
+	    console.log(userRef);
+	    userRef.onDisconnect().remove();
+	    userRef.set(currentUser);
+	  }
+	});
+	// Number of online users is the number of objects in the presence list.
+	presence.on("value", function(snap) {
+	  let status = snap.val(),html="";
+	  for (let i in status){
+	  	console.log(status[i]);
+	  	html+=`<div>${status[i]}</div>`;
+	  }
+	  online.innerHTML = html;
+	  console.log("# of online users = " + snap.numChildren(),snap.val(),snap);
+	});    
 };
+
+//https://stackoverflow.com/questions/23227966/check-firebase-for-an-existing-object-based-on-attributes-prevent-duplicates
