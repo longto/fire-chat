@@ -30,10 +30,10 @@ var getMessageTemplate = function(message){
             <small class="time">${getTime(message.time) || ""}</small>
         </div>`,
         icon = keepHeader ? `<small class="time">${getTime(message.time) || ""}</small>` : `<img src="https://www.b1g1.com/assets/admin/images/no_image_user.png" class="avatar">`,
-        action = `<div class="action">
+        action = me ? `<div class="action">
             <span class="glyphicon glyphicon-pencil"></span>
             <span class="glyphicon glyphicon-trash"></span>
-        </div>` ;
+        </div>` : "";
 
     return `<div class="message ${me}" data-id="${message.id}" data-user="${message.name}">
         <div class="icon">
@@ -71,7 +71,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     });
      */
     if (user) {
-    	//firebase.auth().currentUser
+        //firebase.auth().currentUser
         currentUser = !user || user.isAnonymous ? "Anonymous" : user.displayName || user.email;
         currentUserUid = user.uid;
         console.log(currentUser,"is logged in");
@@ -84,10 +84,22 @@ firebase.auth().onAuthStateChanged(function(user) {
         document.querySelector(".fire-chat").classList.add("hide");
     }
 });
-/*firebase.auth().signInAnonymously().catch(function(error) {
-    console.log(error.code,error.message);
-}).then(function(user){
-});*/
+document.querySelector("#loginGoogle").addEventListener("click",function (e) {
+    let provider = new firebase.auth.GoogleAuthProvider();
+    provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
+    firebase.auth().signInWithPopup(provider).then(function(result) {
+        let token = result.credential.accessToken;
+        let user = result.user;
+    }).catch(function(error) {
+        console.log(error.code,error.message);
+    });
+});
+document.querySelector("#loginAnonymous").addEventListener("click",function (e) {
+    firebase.auth().signInAnonymously().catch(function(error) {
+        console.log(error.code,error.message);
+    }).then(function(user){
+    });
+});
 document.querySelector("#create").addEventListener("click",function (e) {
     document.querySelector("#login-form .error").innerHTML = `&#8203`;
     let email=document.querySelector("#login-form #email").value,
@@ -210,26 +222,31 @@ var initApp = function(messages){
     });
 
     /* check online user */
-	var userRef = presence.child(firebase.auth().currentUser.uid);
-	// Add ourselves to presence list when online.
-	database.ref(".info/connected").on("value", function(snap) {
-	  if (snap.val()) {
-	    // Remove ourselves when we disconnect.
-	    console.log(userRef);
-	    userRef.onDisconnect().remove();
-	    userRef.set(currentUser);
-	  }
-	});
-	// Number of online users is the number of objects in the presence list.
-	presence.on("value", function(snap) {
-	  let status = snap.val(),html="";
-	  for (let i in status){
-	  	console.log(status[i]);
-	  	html+=`<div>${status[i]}</div>`;
-	  }
-	  online.innerHTML = html;
-	  console.log("# of online users = " + snap.numChildren(),snap.val(),snap);
-	});    
+    var userRef = presence.child(firebase.auth().currentUser.uid);
+    // Add ourselves to presence list when online.
+    database.ref(".info/connected").on("value", function(snap) {
+        if (snap.val()) {
+            // Remove ourselves when we disconnect.
+            console.log(userRef);
+            userRef.onDisconnect().remove();
+            userRef.set(currentUser);
+        }
+    });
+    // Number of online users is the number of objects in the presence list.
+    presence.on("value", function(snap) {
+        let status = snap.val(),html="";
+        for (let i in status){
+            console.log(status[i]);
+            html+=`<div>${status[i]}</div>`;
+        }
+        online.innerHTML = html;
+        console.log("# of online users = " + snap.numChildren(),snap.val(),snap);
+    });
 };
-
+/*var credential = firebase.auth.EmailAuthProvider.credential(email, password);
+auth.currentUser.link(credential).then(function(user) {
+    console.log("Anonymous account successfully upgraded", user);
+}, function(error) {
+    console.log("Error upgrading anonymous account", error);
+});*/
 //https://stackoverflow.com/questions/23227966/check-firebase-for-an-existing-object-based-on-attributes-prevent-duplicates
