@@ -16,7 +16,7 @@ var presence = database.ref("presence");
 var currentUser,currentUserUid;
 var chatMessagesDom = document.querySelector(".chat-messages");
 var online = document.querySelector(".online");
-var lastMessage = null;
+var lastMessage = {};
 /* Utils - templates */
 var getTime = function (timestamp) { // Convert UNIX epoch time into human readble time.
     let epoch = new Date(timestamp);
@@ -82,6 +82,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     } else {
         document.querySelector("#login-form").classList.remove("hide");
         document.querySelector(".fire-chat").classList.add("hide");
+        lastMessage={};
     }
 });
 document.querySelector("#loginGoogle").addEventListener("click",function (e) {
@@ -194,6 +195,7 @@ var initApp = function(messages){
         chatMessagesDom.scrollTop = chatMessagesDom.scrollHeight;
     });
     chat.limitToLast(1).on("child_added", function(snapshot, prevChildKey) {
+        if(!lastMessage.name) return;
         let newMessage = snapshot.val();
         newMessage.id = snapshot.key;
         console.log("child_added",newMessage);
@@ -237,7 +239,7 @@ var initApp = function(messages){
         let status = snap.val(),html="";
         for (let i in status){
             console.log(status[i]);
-            html+=`<div>${status[i]}</div>`;
+            html+=`<div class="offline">${status[i]}</div>`;
         }
         online.innerHTML = html;
         console.log("# of online users = " + snap.numChildren(),snap.val(),snap);

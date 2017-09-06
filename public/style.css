@@ -4,6 +4,9 @@
 .pt-15{
     padding-top: 15px;
 }
+.p-10{
+    padding: 10px;
+}
 .full-width{
     width: 100%;
 }
@@ -31,24 +34,18 @@ body{
 .fire-chat > .left {
     overflow-x: hidden;
     overflow-y: auto;
-    width: 300px;
-    padding: 0 10px 20px;
+    width: 250px;
+    border-right: 1px solid #ccc;
 }
 .fire-chat > .right {
     overflow: hidden;
-    width: calc(100% - 300px);
+    width: calc(100% - 250px);
 }
 .fire-chat > .right .chat-messages {
-    height: calc(100% - 80px);
-    padding: 10px;
+    height: calc(100% - 70px);
     overflow-x : hidden;
     overflow-y: auto;
 }
-.fire-chat > .right .chat-input {
-    height: 80px;
-    text-align: center;
-}
-
 .message{
     transition: background-color 0.3s ease;
     cursor: text;
@@ -69,7 +66,7 @@ body{
     height: 40px;
     object-fit: cover;
     cursor: pointer;
-    margin-top: 15px;
+    margin: 10px 0 5px 5px;
 }
 .message .time,.message .action{
     color: #aaa;
@@ -90,7 +87,7 @@ body{
     pointer-events: all;
 }
 .message .content {
-
+    word-break: break-all;
     border-radius: 4px;
     display: inline-block;
 }
@@ -108,10 +105,9 @@ body{
     cursor: pointer;
 }
 .chat-input{
-    padding-top: 10px;
+    padding: 15px 30px 15px;
 }
 #chat-area{
-    width: calc(100% - 40px);
     margin: auto;
     height : 40px;
     border : 3px solid #aaa;
@@ -137,9 +133,10 @@ body{
     cursor: pointer;
 }
 .online{
-    margin-top: 10px;
     border-top: 1px solid #ccc;
-    padding-top: 10px;
+    height: calc(100vh - 80px);
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
 }
 .online>div{
     padding: 5px 0;
@@ -152,4 +149,7 @@ body{
     border-radius: 50%;
     background-color: #1ddc46;
     margin-right: 5px;
+}
+.online>.offline:before{
+    background-color: #ccc;
 }
