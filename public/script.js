@@ -11,6 +11,7 @@ var config = {
 firebase.initializeApp(config);
 var storage = firebase.storage();
 var database = firebase.database();
+var messaging = firebase.messaging();
 var chat = database.ref('chat');
 var presence = database.ref("presence");
 var currentUser,currentUserUid;
@@ -239,10 +240,48 @@ var initApp = function(messages){
         let status = snap.val(),html="";
         for (let i in status){
             console.log(status[i]);
-            html+=`<div class="offline">${status[i]}</div>`;
+            html+=`<div>${status[i]}</div>`;
         }
         online.innerHTML = html;
         console.log("# of online users = " + snap.numChildren(),snap.val(),snap);
+    });
+
+    /*firebase.auth().currentUser.getToken(/!* forceRefresh *!/true).then(function(idToken) {
+        console.log(idToken);
+    }).catch(function(error) {
+        console.log(error.code,error.message);
+    });*/
+
+    messaging.requestPermission()
+        .then(function() {
+            console.log(Notification.permission);
+            console.log('Notification permission granted.');
+        })
+        .catch(function(err) {
+            console.log('Unable to get permission to notify.', err);
+        });
+    messaging.getToken()
+        .then(function(currentToken) {
+            if (currentToken) {
+                console.log(currentToken);
+            } else {
+                console.log('No Instance ID token available. Request permission to generate one.');
+            }
+        })
+        .catch(function(err) {
+            console.log('An error occurred while retrieving token. ', err);
+        });
+    messaging.setBackgroundMessageHandler(function(payload) {
+        console.log('[firebase-messaging-sw.js] Received background message ', payload);
+        // Customize notification here
+        const notificationTitle = 'Background Message Title';
+        const notificationOptions = {
+            body: 'Background Message body.',
+            icon: '/firebase-logo.png'
+        };
+
+        return self.registration.showNotification(notificationTitle,
+            notificationOptions);
     });
 };
 /*var credential = firebase.auth.EmailAuthProvider.credential(email, password);
@@ -252,3 +291,17 @@ auth.currentUser.link(credential).then(function(user) {
     console.log("Error upgrading anonymous account", error);
 });*/
 //https://stackoverflow.com/questions/23227966/check-firebase-for-an-existing-object-based-on-attributes-prevent-duplicates
+
+
+/*
+curl -X POST -H "Authorization: key=AAAAW_kZ3sQ:APA91bElcOoLotLDwkgEZH1mInAnDr3m1R3likkpJA0K5-S4UuN0wOC769X62EZKCTGLw6XOaMx2qF0bi028tRrQjg1Uh8WdtO_4oPKi-wk8T3rZfDOYiTfGNv4w5XW_NYCBf0pr8TNL " -H "Content-Type: application/json" -d '{
+"notification": {
+    "title": "Portugal vs. Denmark",
+        "body": "5 to 1",
+        "icon": "firebase-logo.png",
+        "click_action": "http://localhost:8081"
+},
+"to": "eyJhbGciOiJSUzI1NiIsImtpZCI6ImMzZDY0Y2YzMDQwMjM3ZDc2NzFmMTE1MjIxNmM5Yzk0NmMyOTBiZGEifQ.eyJpc3MiOiJodHRwczovL3NlY3VyZXRva2VuLmdvb2dsZS5jb20vZmlyZS1jaGF0LTNmYjg5IiwiYXVkIjoiZmlyZS1jaGF0LTNmYjg5IiwiYXV0aF90aW1lIjoxNTA1MTE2MDM1LCJ1c2VyX2lkIjoiSUlhTTZLcnNNeWZpeFRsVDVlYWx1dHRlNnE4MiIsInN1YiI6IklJYU02S3JzTXlmaXhUbFQ1ZWFsdXR0ZTZxODIiLCJpYXQiOjE1MDUxMTYwMzYsImV4cCI6MTUwNTExOTYzNiwiZW1haWwiOiJsb25nLnRvQG5pdGVjby5zZSIsImVtYWlsX3ZlcmlmaWVkIjpmYWxzZSwiZmlyZWJhc2UiOnsiaWRlbnRpdGllcyI6eyJlbWFpbCI6WyJsb25nLnRvQG5pdGVjby5zZSJdfSwic2lnbl9pbl9wcm92aWRlciI6InBhc3N3b3JkIn19.0Q9MyLZD4ukh9dZYLPtJTaKWDkRrwe17iaMv0G_pD4EkpEb9WYj411OjCWxWggMqNk6n82PlLy4Lcep254iYJ41wgAtCUbCd8Htl50moHdMHFa__KiQ9oNyweXE1Q1vL1y4lN9EDUkm03ZmNzIii06z8WhjE32h0Zp3AtcU1WQO6xu54v2Eu3s5QcVG5vHkzkWwWkPURy_wCH2Gu5FZX7V6mCSWLeFUWqxwytHGAqiiCTiTm1EL-IChxFCiHcWxqveS51WEIOKwRyABN3tbF1ItpKGhFnIFb2LWXWXDcoWeW3C6srhNxZohB_HFs4rt8XdGNpf1kbdkqVpYMNcmsxA"
+}' "https://fcm.googleapis.com/fcm/send"
+*/
+
