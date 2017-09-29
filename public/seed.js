@@ -30,7 +30,7 @@ var indexSearch = elasticlunr(function () {
     this.saveDocument(false);
 });
 
-var limit = 10,docs=[],tmpJson,
+var limit = 5000,docs=[],tmpJson,
     option={
         isCompress : false,
         isFirebase : true
@@ -46,16 +46,19 @@ let calcPerform = (func,title)=>{
 };
 
 let seedFunc = ()=>{
+    //firebaseSearchData.set("");
     for (let i = 0; i < limit; i++) {
         let doc = {
-            id: i,
             title: randomText(),
             body: randomText(),
             comment: randomText()
         }
         docs.push(doc);
+        firebaseSearchData.push(doc);
     }
-    if (option.isFirebase) firebaseSearchData.set(docs);
+    if (option.isFirebase) {
+        //firebaseSearchData.set(docs);
+    }
 };
 
 let pushSearchIndex = ()=>{
@@ -115,7 +118,7 @@ document.querySelector("#search-input").addEventListener("keydown",function (e) 
 });
 
 document.querySelector("#seed").click();
-document.querySelector("#index").click();
+/*document.querySelector("#index").click();
 setTimeout(function () {
     document.querySelector("#load-index").click();
-},5000);
+},5000);*/
